@@ -20,8 +20,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import PackConsult.ConsultSQl;
 import java.sql.SQLRecoverableException;
+import PackVal.valData;
 
-public class ConsultDataBase{
+public class ConsultDataBase extends valData{
     private String user = "CROWDURA29";
     private String pass = "7Abril20011/F";
     private String url  = "jdbc:oracle:thin:@localhost:1521:XE";
@@ -47,29 +48,25 @@ public class ConsultDataBase{
     public ConsultDataBase(){
         this.objtConsultSql = new ConsultSQl();
     }
-    public ResultSet getResultInsert () throws SQLException{
-        String[] campSql =  { "NIT", "NAMEF", "NAMEL", "TEL", "ADDRES" };
-        this.objtConsultSql.setConsultInsertUserpro( campSql , "USERPRO");
+    public ResultSet getResultInsert (String[] campSql,String[] valCampSql, String namTab) throws SQLException{
+        boolean val;
+        this.objtConsultSql.setConsultInsertUserpro( campSql , namTab);
         String sqlInser = this.objtConsultSql.getConsultInsertUserpro();
         
-        
-        
-        System.out.print(sqlInser);
         try( Connection conexion = DriverManager.getConnection(this.url,this.user,this.pass)){
             
             this.prepstatemnt = conexion.prepareStatement(sqlInser);
             
-            this.prepstatemnt.setString( 1 , "1543838");
-            this.prepstatemnt.setString( 2, "Federico");
-            this.prepstatemnt.setString( 3, "Cuervo");
-            this.prepstatemnt.setInt(4, 2115436);
-            this.prepstatemnt.setString(5, "Prueba de dirección");
+            for(int i = 0; i < campSql.length; i++){
+                val = valStrOrInt(valCampSql[i]);
+                if(val){
+                  this.prepstatemnt.setInt((i+1), Integer.parseInt(valCampSql[i]));  
+                }else{
+                  this.prepstatemnt.setString((i+1), valCampSql[i]);
+                }
+            }
             
             int valfilas = this.prepstatemnt.executeUpdate();
-            System.out.println(valfilas);
-            
-            this.resultsetIn = this.prepstatemnt.executeQuery();
-            
             if(valfilas != 0){
                 System.out.println("El registro se insertó correctamente en la base de datos");
             }else{

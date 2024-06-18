@@ -23,8 +23,8 @@ public interface UserInterface {
         String[][] colTabs = objetDatabase.getResutColum(nameTab);
         return colTabs;
     }
-    public default Boolean getinsertLec() throws SQLException{
-        objetDatabase.getResultInsert();
+    public default Boolean getinsertLec(String[] InfTabCol, String[] valData, String namTab) throws SQLException{
+        objetDatabase.getResultInsert(InfTabCol,valData, namTab);
         return true;
     };
     public default boolean getupdateLec() throws SQLException{
