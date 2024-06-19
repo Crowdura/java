@@ -80,10 +80,13 @@ public class ConsultSQl {
         this.SQLconsultUpdate = result;
     }
     
-    public void setConsultDeleteUserpro(String[] campSql,String tableSql, String[][] consultMatriz){
-        String conSqlI = "WHERE ";
-        
-        result = "DELETE "+tableSql+" "+conSqlI;
+    public void setConsultDeleteUserpro(String[] colKeys, String nameTab){
+        String conSqlI = "WHERE";
+        for(int i = 0;i < colKeys.length; i++){
+            conSqlI += " "+colKeys[i]+" = ?";
+        }
+        result = "DELETE "+nameTab+" "
+                +conSqlI;
         this.SQLconsultDelet = result;
     }
     public void setConsultTable(String userData){

@@ -34,8 +34,8 @@ public interface UserInterface {
         objetDatabase.getResultUpdate(colUpd, colVal, colKey, colValKey, namTab);
         return true;
     };
-    public default boolean getdeleteLec() throws SQLException{
-        objetDatabase.getResultDelect();
+    public default boolean getdeleteLec(String[] colKeys, String[] colVal, String nameTab) throws SQLException{
+        objetDatabase.getResultDelect(colKeys, colVal, nameTab);
         
         return true;
     };

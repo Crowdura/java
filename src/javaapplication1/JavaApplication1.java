@@ -22,6 +22,7 @@ public class JavaApplication1 implements UserInterface{
     public static valData objetoVal = new valData();
     private static int opci = 0;
     private String[] infTabCop;
+    private String[] nameTab;
     public void resetP() throws SQLException{
         consulTab();
         System.out.print("Elija la opción a procesar en el usuario ");
@@ -81,11 +82,10 @@ public class JavaApplication1 implements UserInterface{
         
         System.out.println("Ingrese la tabla a la que actualizara el registro");
         String namTab = scanner.next().toUpperCase();
-        if(namTab == ""){
-          return;
+        if(objetoVal.valFindVal(this.nameTab, namTab)){
+            colKeys = objeto.getTableKeys(namTab);
         }else{
-          colKeys = objeto.getTableKeys(namTab);
-          System.out.println(colKeys[0]);
+            return;
         }
         System.out.println("Existen la siguientes keys en la tabla");
         for(int i = 0; i < colKeys.length; i++){
@@ -97,7 +97,7 @@ public class JavaApplication1 implements UserInterface{
         
         System.out.println("Especifique el valor de cada una de las llaves para la busqueda");
         for(int i = 0; i < colKeyV.length; i++){
-            if(objetoVal.valFindArr(colKeys, colKeyV[i])){
+            if(objetoVal.valFindVal(colKeys, colKeyV[i])){
                System.out.println(colKeyV[i].toUpperCase()+":");
                colKeysVar[i] = scanner.next();
             }else{
@@ -134,7 +134,26 @@ public class JavaApplication1 implements UserInterface{
     }
     
     public void delect() throws SQLException{
-        objeto.getdeleteLec();
+        String[] colKeys;
+        String[] colVal;
+        System.out.println("Seleccione la tabla a la cual se eliminara el registro");
+        String nameTab = scanner.next().toUpperCase();
+        if(objetoVal.valFindVal(this.nameTab, nameTab)){
+            colKeys = objeto.getTableKeys(nameTab);
+            System.out.println("Existen la siguientes keys en la tabla");
+        }else{
+            System.out.println("La tabla no existe en la base de datos");
+            resetP();
+            return;  
+        }
+        colVal = new String[colKeys.length];
+        System.out.println("Escriba los valores de las llaves para la busqueda de eliminación");
+        for(int i = 0; i < colKeys.length; i++){
+            System.out.println(colKeys[i]+":");
+            colVal[i] = scanner.next();
+        }
+        
+        objeto.getdeleteLec(colKeys, colVal, nameTab);
     }
     
     public void consul() throws SQLException{
@@ -156,6 +175,7 @@ public class JavaApplication1 implements UserInterface{
             infTabCop[i] = inf.replaceAll("null", "");
             System.out.println(inf.replaceAll("null ", ""));
         }
+        this.nameTab = tabsExData;
     }
     
     public static void main(String[] args) throws SQLException {

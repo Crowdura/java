@@ -148,7 +148,31 @@ public class ConsultDataBase extends valData{
        return this.resultsetUpd;
     }
     
-    public ResultSet getResultDelect() throws SQLException{
+    public ResultSet getResultDelect(String[] colKeys, String[] colValu, String nametab) throws SQLException{
+        try(Connection conexion = DriverManager.getConnection(this.url, this.user, this.pass)){
+            objtConsultSql.setConsultDeleteUserpro(colKeys, nametab);
+            System.out.println(objtConsultSql.getConsultDeleteUserpro());
+            this.prepstatemnt = conexion.prepareStatement(objtConsultSql.getConsultDeleteUserpro());
+            
+            for(int i = 0; i < colValu.length; i++){
+                if(valStrOrInt(colValu[i])){
+                    this.prepstatemnt.setInt((i+1), Integer.parseInt(colValu[i]));
+                }else{
+                    this.prepstatemnt.setString((i+1), colValu[i]);
+                }
+            }
+            
+            this.resultsetDel = prepstatemnt.executeQuery();
+            this.prepstatemnt.close();
+            conexion.close();
+        }catch(SQLException ex){
+           if(ex instanceof java.sql.SQLRecoverableException){
+             System.err.println("Error SQlRecoverableException"+ ex.getMessage());
+           }else{
+              System.err.println("Error al ejecutar la consulta:"+ ex.getMessage());
+           }
+          Logger.getLogger(ConsultDataBase.class.getName()).log(Level.SEVERE, null, ex);   
+        }
         return this.resultsetDel;
     }
     

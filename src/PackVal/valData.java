@@ -20,10 +20,11 @@ public class valData {
       }
       return val;
     }
-    public boolean valFindArr(String[] valArr, String camVal){
+    public boolean valFindVal(String[] valArr, String camVal){
      boolean val = Arrays.asList(valArr).contains(camVal.toUpperCase());
      return val;
     }
+    
     public String[] valRemovNull(String[] arry){
       boolean status = Arrays.asList(arry).remove("null");
       return arry;
