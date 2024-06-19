@@ -12,12 +12,14 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Packinterface.UserInterface;
+import PackVal.valData;
 import java.util.Scanner;
 
 public class JavaApplication1 implements UserInterface{
     //   Proceso de selección de operación
     private Scanner scanner = new Scanner(System.in);
     public static JavaApplication1 objeto = new JavaApplication1();
+    public static valData objetoVal = new valData();
     private static int opci = 0;
     private String[] infTabCop;
     public void resetP() throws SQLException{
@@ -68,9 +70,67 @@ public class JavaApplication1 implements UserInterface{
         
         objeto.getinsertLec(dataInftabA, dataColA, nambTab);
     }
-    
+ // actualización dinaminaca   
     public void update() throws SQLException{
-        objeto.getupdateLec();
+        String[] dataInftabA;
+        String[] colKeys;
+        String[] colUpd;
+        String[] colKeysVar;
+        String valStrDelect = "";
+        String dataInftabS = ""; 
+        
+        System.out.println("Ingrese la tabla a la que actualizara el registro");
+        String namTab = scanner.next().toUpperCase();
+        if(namTab == ""){
+          return;
+        }else{
+          colKeys = objeto.getTableKeys(namTab);
+          System.out.println(colKeys[0]);
+        }
+        System.out.println("Existen la siguientes keys en la tabla");
+        for(int i = 0; i < colKeys.length; i++){
+            System.out.println(colKeys[i]);
+        }
+        System.out.println("indique cuales keys utilizar con una ,");
+        String[] colKeyV = scanner.next().split(",");
+        colKeysVar = new String[colKeyV.length];
+        
+        System.out.println("Especifique el valor de cada una de las llaves para la busqueda");
+        for(int i = 0; i < colKeyV.length; i++){
+            if(objetoVal.valFindArr(colKeys, colKeyV[i])){
+               System.out.println(colKeyV[i].toUpperCase()+":");
+               colKeysVar[i] = scanner.next();
+            }else{
+               valStrDelect += colKeyV[i]+",";
+               System.out.println("No existe esta columna como llave "+colKeyV[i]);
+            }
+        }
+        
+        colKeysVar = objetoVal.valRemovNull(colKeysVar);
+ 
+        colKeyV = objetoVal.valRemovArr(colKeyV, objetoVal.valRemovNull(valStrDelect.split(",")));
+        
+        if(colKeyV.length == 0){
+            System.out.println("Minimo debe de existir un registros");
+            System.exit(0);
+        }
+        
+        System.out.println("Ingrese los campos a actualizar Seguidos de una ,");
+        dataInftabA = scanner.next().toUpperCase().split(",");
+        dataInftabA = objetoVal.valRemovArr(dataInftabA, colKeys);
+        if(dataInftabA.length == 0){
+            System.out.println("No sea seleccionado una campo por favor recuerde que no se puede modificar campos de tipo keys");
+            System.exit(0);
+        }
+        System.out.println("Ingrese los valores a remplazar");
+        colUpd = new String[dataInftabA.length];
+        
+        for(int i = 0; i < dataInftabA.length; i++){
+            System.out.println(dataInftabA[i]+":");
+            colUpd[i] = scanner.next();
+        }
+        
+        objeto.getupdateLec(dataInftabA, colUpd, colKeyV, colKeysVar, namTab);
     }
     
     public void delect() throws SQLException{

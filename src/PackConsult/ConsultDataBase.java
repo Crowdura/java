@@ -34,6 +34,7 @@ public class ConsultDataBase extends valData{
     private ResultSet resultsetConSQL;
     private ResultSet resultsetConTab;
     private ResultSet resultsetConTabCol;
+    private ResultSet resultsetConTabKey;
     private ConsultSQl objtConsultSql;
     
     public String getUser( ){
@@ -113,23 +114,44 @@ public class ConsultDataBase extends valData{
         }
         return data;
     }
-    public ResultSet getResultUpdate() throws SQLException{
-        String[][] campSetDaSql = null;
-        String[][] consultMatriz = null;
-        this.objtConsultSql.setConsultUpdateUserpro(campSetDaSql, "USERPRO", consultMatriz);
+    public ResultSet getResultUpdate(String[] colUpd, String[] colVal, String[] colKey,String[] colValKey, String nametab ) throws SQLException{
+        
+        this.objtConsultSql.setConsultUpdateUserpro(colUpd,colKey,colValKey,nametab);
         
         try(Connection conexion = DriverManager.getConnection(this.url,this.user,this.pass)){
+            
           this.prepstatemnt = conexion.prepareStatement(this.objtConsultSql.getConsultUpdateUserpro());
+          
+          for(int i = 0; i < colUpd.length; i++){
+              if(valStrOrInt(colVal[i])){
+                this.prepstatemnt.setInt((i+1), Integer.parseInt(colUpd[i]));
+              }else{
+                this.prepstatemnt.setString((i+1), colVal[i]);
+              }
+          }
+          
           this.resultsetUpd = this.prepstatemnt.executeQuery();
           this.resultsetUpd.next();
+          
+ 
+          prepstatemnt.close();
+          conexion.close();
         }catch(SQLException ex){
+            if(ex instanceof java.sql.SQLRecoverableException){
+                System.err.println("Error SQlRecoverableException"+ ex.getMessage());
+            }else{
+                System.err.println("Error al ejecutar la consulta:"+ ex.getMessage());
+            }
+            Logger.getLogger(ConsultDataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         
        return this.resultsetUpd;
     }
+    
     public ResultSet getResultDelect() throws SQLException{
         return this.resultsetDel;
     }
+    
     public String[] getResultTab() throws SQLException{
         this.resultsetConTab = null;
         objtConsultSql.setConsultTable(user);
@@ -161,6 +183,7 @@ public class ConsultDataBase extends valData{
         }
        return dataTabla;
     }
+    
     public String[][] getResutColum(String[] namTabs) throws SQLException{
         String[][] columns = null;
         String rs = null;
@@ -210,5 +233,41 @@ public class ConsultDataBase extends valData{
                
         return columns;
     }
+    public String[] getColKey(String namtab) throws SQLException{
+        String[] tabKey = null;
+        String data = "";
+        try(Connection conexion = DriverManager.getConnection(this.url, this.user, this.pass)){
+            this.objtConsultSql.setConsulTabKey(namtab);
+            String consulSQL  = this.objtConsultSql.getConsulTabKey();
+            this.prepstatemnt = conexion.prepareStatement(consulSQL);
+            this.resultsetConTabKey = this.prepstatemnt.executeQuery();
+            this.resultsetConTabKey.next();
+            
+            do{
+               data += this.resultsetConTabKey.getString("column_name")+",";
+               
+            }while(this.resultsetConTabKey.next());
+            
+            this.prepstatemnt.close();
+            conexion.close();
+            
+            if(data != ""){
+               tabKey = data.split(",");
+            }else{
+                System.out.println("no existen col clave");
+                System.exit(0);
+            }
+        }
+        catch(SQLException ex){
+           if(ex instanceof java.sql.SQLRecoverableException){
+             System.err.println("Error SQlRecoverableException"+ ex.getMessage());
+           }else{
+              System.err.println("Error al ejecutar la consulta:"+ ex.getMessage());
+           }
+          Logger.getLogger(ConsultDataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return tabKey;
+    }
+    
 }    
 

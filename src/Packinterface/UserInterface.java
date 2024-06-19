@@ -10,7 +10,6 @@ package Packinterface;
  */
 import PackConsult.ConsultDataBase;
 import java.sql.SQLException;
-import java.util.Scanner;
         
 public interface UserInterface {
     public ConsultDataBase objetDatabase = new ConsultDataBase();
@@ -23,12 +22,16 @@ public interface UserInterface {
         String[][] colTabs = objetDatabase.getResutColum(nameTab);
         return colTabs;
     }
+    public default String[] getTableKeys(String nameTab) throws SQLException{
+        String[] colKeys = objetDatabase.getColKey(nameTab);
+        return colKeys;
+    }    
     public default Boolean getinsertLec(String[] InfTabCol, String[] valData, String namTab) throws SQLException{
         objetDatabase.getResultInsert(InfTabCol,valData, namTab);
         return true;
     };
-    public default boolean getupdateLec() throws SQLException{
-        objetDatabase.getResultUpdate();
+    public default boolean getupdateLec(String[] colUpd,String[] colVal,String[] colKey,String[] colValKey, String namTab) throws SQLException{
+        objetDatabase.getResultUpdate(colUpd, colVal, colKey, colValKey, namTab);
         return true;
     };
     public default boolean getdeleteLec() throws SQLException{

@@ -18,6 +18,7 @@ public class ConsultSQl {
     private String SQLconsultDelet;
     private String SQLconsultDataTabs;
     private String SQlconsultTabCol;
+    private String SQLconsultKeyTab;
     private String result;
     
     public void setConsultALLUserpro( String[] campSql,String tableSql, String[][] consultMatriz){
@@ -64,26 +65,18 @@ public class ConsultSQl {
         this.SQLconsultInsert = result;
     }
     
-    public void setConsultUpdateUserpro(String[][] campSetDaSql,String tableSql, String[][] consultMatriz){
-        String setData = ""; 
+    public void setConsultUpdateUserpro(String[] colSql,String[] colSqlKey,String[] colSqlKeyVal ,String nameTab){
+        String colSet = "";
         String conSqli = "WHERE ";
-        for(int i = 0; i < campSetDaSql.length; i++){
-           for(int j = 0; j < campSetDaSql[i].length; j++){
-               setData += campSetDaSql[i][j];
-               if( j < campSetDaSql[i].length -1){
-                   setData += " = ";
-               }
-           }
+        
+        for(int i = 0; i < colSql.length; i++){
+            colSet += colSql[i]+" = ? ";
         }
-        
-        for(int i = 0; i < consultMatriz.length; i++){
-            for(int j = 0; j < consultMatriz[i].length; i++){
-                if( i < consultMatriz[i].length ){}
-            }
-        }
-        
-        
-        result = "UPDATE "+tableSql+" SET "+setData+" "+conSqli;
+        for(int j = 0; j < colSqlKey.length; j++){
+            conSqli += colSqlKey[j]+" = "+colSqlKeyVal[j]; 
+        } 
+        result = "UPDATE "+nameTab+" SET "+colSet+" "+conSqli;
+        System.out.println(result);
         this.SQLconsultUpdate = result;
     }
     
@@ -125,12 +118,28 @@ public class ConsultSQl {
                 + conSQl;
         this.SQlconsultTabCol = result;
     }
+    public void setConsulTabKey(String namTab){
+        String conSql = "";
+        
+        conSql = "SELECT column_name "
+                +"FROM user_cons_columns "
+                + "WHERE constraint_name = ( "
+                + "SELECT constraint_name "
+                + "FROM user_constraints "
+                + "WHERE table_name = '"+namTab+"' "
+                + "AND constraint_type = 'P' )";
+        
+        this.SQLconsultKeyTab = conSql;
+    }
+    
+    public String getConsulTabKey(){
+       return this.SQLconsultKeyTab; 
+    }
     
     public String getConsultTab(){
         return this.SQLconsultDataTabs;
-        
     }
-    
+
     public String getConsultTabCol(){
        return this.SQlconsultTabCol;
     };
