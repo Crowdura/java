@@ -157,7 +157,54 @@ public class JavaApplication1 implements UserInterface{
     }
     
     public void consul() throws SQLException{
-        objeto.getconsultLec();
+        String[][] data;
+        String[] campSQL = null;
+        String[] colVal = null;
+        String[] colVlue = null;
+        String namTab;
+        String[] namDef = new String[1];
+        String[][] columns;
+        String[] Column;
+        System.out.println("Ingrese la table a consultar");
+        namTab = scanner.next().toUpperCase();
+        if(objetoVal.valFindVal(this.nameTab, namTab)){
+            System.out.println("Ingrese los campos que se desea visualizar se parandolos con ,");
+            namDef[0] = namTab;
+            columns = objeto.getTablecolumn(namDef);
+        }else{
+            System.out.println("No existe la tabla");
+            resetP();
+            return;
+        }
+        String campSqlV =  scanner.next().toUpperCase();
+        campSQL = campSqlV.split(",");
+        Column = columns[0];
+        campSQL = objetoVal.valExistArr(campSQL,Column);
+        for(String item : campSQL){
+            System.out.println(item);
+        }
+        
+        System.out.println("Ingrese los campos de consulta si son requeridos con una , o presione Enter si no es necesario");
+        String campVal = scanner.next().toUpperCase();
+        colVal = campVal.split(",");
+        colVal = objetoVal.valExistArr(colVal, Column);
+        if(colVal.length == 0){
+            System.out.println("No se contiene nigun campo");
+            System.exit(0);
+        }
+        colVlue = new String[colVal.length];
+        
+        for(int i = 0; i < colVal.length; i++){
+            System.out.println(colVal[i]+":");
+            colVlue[i] = scanner.next();
+        }
+        
+        data = objeto.getconsultLec(campSQL, colVal, colVlue, namTab);
+        for(int i = 0; i < data.length; i++){
+            for(int j = 0;j < data[i].length; j++){
+//                System.out.println(data[i][j]);
+            }
+        }
     }
     
     public void consulTab() throws SQLException{

@@ -82,25 +82,53 @@ public class ConsultDataBase extends valData{
         }
         return this.resultsetIn;
     }
-    public String[][] getResultConsult(String[] campSql, String consultable, String[][] consultMatriz) throws SQLException{
+    public String[][] getResultConsult(String[] campSql, String[] colVal, String[] colValue, String nameTab) throws SQLException{
         String[][] data = null;
         int cont = 0;
-        this.objtConsultSql.setConsultALLUserpro(campSql, consultable, consultMatriz);
-        
-        String consultSQL = this.objtConsultSql.getConsultALLUserpro();
-        
+        this.objtConsultSql.setConsultALLUserpro(campSql, colVal, nameTab);
+       
         try(Connection conexion = DriverManager.getConnection(this.url,this.user,this.pass)) {
             
-            this.stateme = conexion.createStatement();
+            this.prepstatemnt = conexion.prepareStatement(this.objtConsultSql.getConsultALLUserpro());
             
-            this.resultsetConSQL = stateme.executeQuery(consultSQL);
+            for(int i = 0; i < colVal.length; i++){
+               if(valStrOrInt(colVal[i])){
+                   System.out.println(colValue[i]);
+                   this.prepstatemnt.setInt((i+1), Integer.parseInt(colValue[i]));
+               }else{
+                   this.prepstatemnt.setString((i+1), colValue[i]);
+               }
+            }
+            
+            this.resultsetConSQL = prepstatemnt.executeQuery();
             this.resultsetConSQL.next();
+            String a = "";
+            
              do {
+                for(int i = 0; i < campSql.length; i++){
+                    a += this.resultsetConSQL.getString(campSql[i]);
+                    if(i < campSql.length - 1){
+                        a += ",";
+                    }
+                }
                 cont += 1;
-                System.out.println(this.resultsetConSQL.getMetaData());
-                System.out.println(cont);
+                a += ".";
+                
             } while (this.resultsetConSQL.next());
-            this.stateme.close();
+             
+             String[] dataS = a.split("."); 
+             System.out.println(dataS[1]);
+             String[] conten;
+             data = new String[campSql.length][cont];
+             for(int i = 0; i < data.length; i++){
+                conten = dataS[i].split(",");
+                 System.out.println(dataS[i]);
+                for(int j = 0; j < data[i].length; j++){
+ //                  System.out.println(conten[j]);
+                   data[i][j] = conten[j];
+                }
+             }
+            this.prepstatemnt.close();
             conexion.close();
              
         }catch(SQLException ex){

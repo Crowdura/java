@@ -39,13 +39,8 @@ public interface UserInterface {
         
         return true;
     };
-    public default String[][] getconsultLec() throws SQLException{
-        
-       String[][] data = null;
-       String [] campSql = null;
-            
-       
-       objetDatabase.getResultConsult(campSql, "USERPRO", data);
+    public default String[][] getconsultLec(String[] campSQl,String[] colVal,String[] colValue, String nameTab) throws SQLException{
+       String[][] data = objetDatabase.getResultConsult(campSQl ,colVal, colValue, nameTab);
        return data;
     };
 }

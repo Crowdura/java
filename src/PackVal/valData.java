@@ -24,9 +24,22 @@ public class valData {
      boolean val = Arrays.asList(valArr).contains(camVal.toUpperCase());
      return val;
     }
+    public String[] valExistArr(String[] arry, String[] ArrVal){
+     ArrayList<String> lista = new ArrayList<>(Arrays.asList(ArrVal));
+     ArrayList<String> lista2 = new ArrayList<>(Arrays.asList(arry));
+     
+      for(String element : arry){
+          if(lista.contains(element)){
+          }else{
+            System.out.println("No existe la columna "+element);
+            lista2.remove(element);
+          }
+      }
+     return arry = lista2.toArray(new String[0]);
+    }
     
     public String[] valRemovNull(String[] arry){
-      boolean status = Arrays.asList(arry).remove("null");
+      Arrays.asList(arry).remove("null");
       return arry;
     }
     public String[] valRemovVal(String[] arry, String val){

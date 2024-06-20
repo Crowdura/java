@@ -21,27 +21,27 @@ public class ConsultSQl {
     private String SQLconsultKeyTab;
     private String result;
     
-    public void setConsultALLUserpro( String[] campSql,String tableSql, String[][] consultMatriz){
+    public void setConsultALLUserpro( String[] campSql,String[] colVal, String tableSql){
         String conSqli = "";
         String campSqli = "";
-        for (int j = 0; j< campSql.length; j++)  {
+        for(int j = 0; j< campSql.length; j++)  {
             campSqli += campSql[j];
             if(j < campSql.length - 1){
               campSqli += ",";
             }
         }
-        for(int i = 0; i < consultMatriz.length; i++){
-            for(int j = 0; j < consultMatriz[i].length; j++){
-                if(i != 0){
-                    conSqli += consultMatriz[i][j];
-                }
-                if(i < consultMatriz.length - 1){
-                    conSqli += " ";
-                };
+        for(int j = 0; j < colVal.length; j++){
+            
+            if( j == 0){
+                conSqli += "WHERE ";
+                conSqli += colVal[j]+" = ?";
+            }else{
+                conSqli += " AND ";
+                conSqli += colVal[j]+" = ?";
             }
         }
-        result = "SELECT "+campSqli+" FROM "+tableSql+" WHERE"+conSqli;
-     
+        result = "SELECT "+campSqli+" FROM "+tableSql+" "+conSqli;
+        System.out.println(result);
         this.SQLconsultALL = result;
     }
     
