@@ -112,19 +112,15 @@ public class ConsultDataBase extends valData{
                     }
                 }
                 cont += 1;
-                a += ".";
+                a += " ";
                 
             } while (this.resultsetConSQL.next());
-             
-             String[] dataS = a.split("."); 
-             System.out.println(dataS[1]);
+             String[] dataS = a.split(" "); 
              String[] conten;
-             data = new String[campSql.length][cont];
+             data = new String[cont][campSql.length];
              for(int i = 0; i < data.length; i++){
                 conten = dataS[i].split(",");
-                 System.out.println(dataS[i]);
                 for(int j = 0; j < data[i].length; j++){
- //                  System.out.println(conten[j]);
                    data[i][j] = conten[j];
                 }
              }
