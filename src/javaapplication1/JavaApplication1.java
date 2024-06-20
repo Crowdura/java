@@ -66,7 +66,7 @@ public class JavaApplication1 implements UserInterface{
         
         for(int i = 0; i < dataInftabA.length; i++){
             System.out.println(dataInftabA[i]+":");
-            dataColA[i] = scanner.next();
+            dataColA[i] = scanner.next().toUpperCase();
         }
         
         objeto.getinsertLec(dataInftabA, dataColA, nambTab);
@@ -202,7 +202,7 @@ public class JavaApplication1 implements UserInterface{
         data = objeto.getconsultLec(campSQL, colVal, colVlue, namTab);
         for(int i = 0; i < data.length; i++){
             for(int j = 0;j < data[i].length; j++){
-//                System.out.println(data[i][j]);
+               System.out.println(data[i][j]);
             }
         }
     }
